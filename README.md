@@ -85,6 +85,7 @@ node tools/sync-from-app.mjs /path/to/loto-simulator
 ```bash
 npm i --no-save playwright && npx playwright install chromium webkit
 node test.mjs
+BASE_URL=https://redsprut.github.io/lottery-whirl-demo/ node test.mjs   # проверить опубликованный сайт
 ```
 
 По умолчанию тесты идут в Chromium и WebKit. `BROWSERS=chromium,webkit,firefox` добавляет Firefox,

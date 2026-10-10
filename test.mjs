@@ -6,6 +6,7 @@
  *   BROWSERS=chromium,webkit,firefox node test.mjs
  *   SHOTS=1 node test.mjs            # also refresh ./screenshots (chromium)
  *   SHOT_DIR=/some/dir …                                           # per-engine screenshots for review
+ *   BASE_URL=https://redsprut.github.io/lottery-whirl-demo/ …      # check the published site
  *
  * Part 1 (Node): the generator against the registry — counts, ranges, uniqueness, draw order,
  * same-pool vs separate-pool semantics, uniformity, freshness.
@@ -97,10 +98,10 @@ log('GENERATOR OK —', Object.entries(results.generator).map(([id, r]) => `${id
 let pw;
 try { pw = await import('playwright'); } catch { log('playwright missing — browser part skipped'); process.exit(0); }
 
-const server = createStandServer();
-await new Promise((r) => server.listen(0, '127.0.0.1', r));
-const PORT = server.address().port;
-const URL0 = `http://127.0.0.1:${PORT}/`;
+// BASE_URL=https://redsprut.github.io/lottery-whirl-demo/ checks the published site instead of a local server.
+const server = process.env.BASE_URL ? null : createStandServer();
+if (server) await new Promise((r) => server.listen(0, '127.0.0.1', r));
+const URL0 = process.env.BASE_URL || `http://127.0.0.1:${server.address().port}/`;
 
 const VIEWPORTS = [
   { name: 'iphone', viewport: { width: 390, height: 844 }, deviceScaleFactor: 3, isMobile: true, hasTouch: true },
@@ -343,6 +344,6 @@ for (const engineName of engines) {
   log(`${engineName.toUpperCase()} OK — ${Object.keys(eng.viewports).length} viewports × 9 lotteries × 2 layouts, grid, rapid ${eng.rapid.switches} switches, leaks ${JSON.stringify(eng.leaks)}${eng.perf ? `, perf ${JSON.stringify(eng.perf)}` : ''}`);
 }
 
-server.close();
+server?.close();
 await fs.writeFile(process.env.RESULT_JSON || path.join(os.tmpdir(), 'lottery-whirl-result.json'), JSON.stringify(results, null, 2));
 log('ALL OK');
