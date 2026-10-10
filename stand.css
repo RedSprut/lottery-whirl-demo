@@ -1,0 +1,135 @@
+/* Lottery Whirl — preview stand chrome (local only). */
+:root {
+  color-scheme: dark;
+  --bg: #07060b; --panel: #100e17; --panel-2: #17141f; --line: rgba(255,255,255,.09);
+  --text: #f3f1f7; --sub: #a29fb0; --accent: #2A4BD8; --accent-2: #1E7FC8;
+  --ui: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --gutter: max(16px, env(safe-area-inset-left));
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--bg); color: var(--text); font: 14px/1.4 var(--ui); -webkit-text-size-adjust: 100%; }
+body {
+  min-height: 100dvh; display: grid;
+  grid-template-rows: auto auto minmax(300px, 1fr) auto auto;
+  gap: 12px; padding: max(12px, env(safe-area-inset-top)) var(--gutter) max(14px, env(safe-area-inset-bottom));
+  max-width: 1280px; margin: 0 auto;
+}
+button { font: inherit; color: inherit; }
+[hidden] { display: none !important; }
+
+/* header */
+.st-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.st-brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.st-logo {
+  width: 30px; height: 30px; border-radius: 50%; flex: none;
+  background: conic-gradient(from 210deg, var(--accent), var(--accent-2), #fff, var(--accent));
+  box-shadow: 0 0 18px color-mix(in srgb, var(--accent) 60%, transparent);
+  transition: background .6s;
+}
+.st-head h1 { margin: 0; font-size: 16px; letter-spacing: .02em; }
+.st-head p { margin: 0; color: var(--sub); font-size: 12px; }
+
+/* segmented controls */
+.st-seg { display: inline-flex; background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 3px; gap: 2px; }
+.st-seg button {
+  border: 0; background: transparent; padding: 6px 12px; border-radius: 999px; cursor: pointer;
+  color: var(--sub); font-weight: 600; font-size: 13px; min-height: 32px; white-space: nowrap;
+}
+.st-seg button[aria-checked="true"] { background: var(--panel-2); color: var(--text); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 55%, transparent); }
+.st-seg button:focus-visible, .st-btn:focus-visible, .st-picker button:focus-visible, .st-tile:focus-visible { outline: 2px solid color-mix(in srgb, var(--accent) 80%, #fff); outline-offset: 2px; }
+
+/* lottery picker: 9 buttons */
+.st-picker { display: grid; grid-template-columns: repeat(9, minmax(0, 1fr)); gap: 6px; }
+.st-picker button {
+  display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto auto; column-gap: 8px; align-items: center;
+  text-align: left; padding: 8px 10px; min-height: 48px; border-radius: 14px; cursor: pointer;
+  background: var(--panel); border: 1px solid var(--line); transition: border-color .25s, background .25s, box-shadow .25s;
+}
+.st-picker button:hover { border-color: color-mix(in srgb, var(--hdr-a) 55%, transparent); }
+.st-picker button[aria-checked="true"] {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--hdr-a) 32%, var(--panel)), color-mix(in srgb, var(--hdr-c) 20%, var(--panel)));
+  border-color: color-mix(in srgb, var(--hdr-a) 80%, #fff 0%);
+  box-shadow: 0 0 22px -6px var(--game-glow);
+}
+.st-sw { grid-row: 1 / span 2; display: inline-flex; }
+.st-sw i { width: 14px; height: 14px; border-radius: 50%; display: block; box-shadow: inset 0 -2px 3px rgba(0,0,0,.3); }
+.st-sw .m { background: radial-gradient(circle at 35% 30%, var(--gm-hi), var(--gm) 60%, var(--gm-lo)); }
+.st-sw .b { background: radial-gradient(circle at 35% 30%, var(--gb-hi), var(--gb) 60%, var(--gb-lo)); margin-left: -4px; box-shadow: 0 0 0 1.5px var(--panel), inset 0 -2px 3px rgba(0,0,0,.3); }
+.st-pname { font-weight: 700; font-size: 12.5px; line-height: 1.15; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.st-pfmt { font-size: 11px; color: var(--sub); font-variant-numeric: tabular-nums; }
+
+/* stage */
+.st-main { min-height: 0; display: grid; }
+.st-stage-frame { position: relative; min-height: 0; border-radius: 22px; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 30px 60px -30px rgba(0,0,0,.8); }
+.st-stage { position: absolute; inset: 0; border-radius: inherit; }
+.st-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; align-content: start; }
+.st-tile { position: relative; aspect-ratio: 4 / 3; border-radius: 16px; overflow: hidden; border: 1px solid var(--line); cursor: pointer; }
+.st-tile > .wh-stage { position: absolute; inset: 0; }
+
+/* controls */
+.st-controls { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; }
+.st-actions { display: flex; gap: 8px; }
+.st-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 18px;
+  border-radius: 14px; border: 1px solid var(--line); cursor: pointer; font-weight: 700; font-size: 14px; white-space: nowrap;
+}
+.st-btn svg { width: 18px; height: 18px; }
+.st-btn-ghost { background: var(--panel); }
+.st-btn-ghost:hover { background: var(--panel-2); }
+.st-btn-primary {
+  border-color: transparent; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.5);
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  box-shadow: 0 8px 24px -10px var(--accent), inset 0 1px 0 rgba(255,255,255,.25);
+  transition: background .5s, box-shadow .5s;
+}
+.st-btn:active { transform: translateY(1px); }
+.st-options { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; }
+.st-field { display: flex; align-items: center; gap: 8px; }
+.st-label { color: var(--sub); font-size: 12px; }
+.st-toggles { display: flex; flex-wrap: wrap; gap: 6px 14px; }
+.st-check { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; color: var(--sub); font-size: 13px; min-height: 32px; }
+.st-check input { accent-color: var(--accent); width: 16px; height: 16px; margin: 0; }
+.st-check:has(input:checked) { color: var(--text); }
+
+/* info */
+.st-info { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 10px 14px; display: grid; gap: 6px; }
+.st-info-row { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; }
+.st-info-row span { color: var(--sub); font-size: 12.5px; }
+.st-combo { gap: 6px; }
+.st-n { display: inline-grid; place-items: center; min-width: 28px; height: 24px; padding: 0 6px; border-radius: 8px; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--text) !important; background: var(--panel-2); font-size: 13px !important; }
+.st-n-bonus, .st-n-addon { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 70%, #fff); }
+.st-n-bonus:first-of-type, .st-n-main + .st-n-bonus, .st-n-main + .st-n-addon { margin-left: 10px; }
+.st-disclaimer { margin: 0; color: var(--sub); font-size: 11.5px; }
+.st-fatal { background: #5a1020; padding: 10px 14px; border-radius: 12px; }
+
+/* grid view: the stage row hosts the 3×3 grid; let the page scroll */
+body.is-grid { grid-template-rows: auto auto auto auto auto; }
+
+/* tablet */
+@media (max-width: 1100px) {
+  .st-picker { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+}
+/* phone */
+@media (max-width: 700px) {
+  body { gap: 10px; grid-template-rows: auto auto minmax(340px, 1fr) auto auto; }
+  .st-head p { font-size: 11px; }
+  .st-picker { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; }
+  .st-picker button { padding: 6px 8px; min-height: 44px; column-gap: 6px; border-radius: 12px; }
+  .st-sw i { width: 11px; height: 11px; }
+  .st-pname { font-size: 10.5px; letter-spacing: -.01em; white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; line-height: 1.12; }
+  .st-pfmt { font-size: 10px; }
+  .st-stage-frame { border-radius: 18px; }
+  .st-grid { grid-template-columns: 1fr; }
+  .st-controls { flex-direction: column; align-items: stretch; }
+  .st-actions { display: grid; grid-template-columns: 1fr 1.5fr; }
+  .st-btn { padding: 0 10px; font-size: 13.5px; }
+  .st-options { justify-content: space-between; }
+  .st-field { flex-wrap: wrap; }
+}
+@media (min-width: 701px) and (max-width: 1100px) {
+  .st-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+/* short landscape phones */
+@media (max-height: 500px) and (orientation: landscape) {
+  body { grid-template-rows: auto auto minmax(260px, 1fr) auto auto; }
+}

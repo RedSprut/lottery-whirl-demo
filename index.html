@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#07060b">
+<title>Preloader Demo · Lottery Whirl</title>
+<link rel="stylesheet" href="./whirl.css">
+<link rel="stylesheet" href="./stand.css">
+</head>
+<body>
+<header class="st-head">
+  <div class="st-brand">
+    <span class="st-logo" aria-hidden="true"></span>
+    <div>
+      <h1>Preloader Demo</h1>
+      <p>Lottery Whirl · независимый стенд для экспериментов</p>
+    </div>
+  </div>
+  <div class="st-seg" role="radiogroup" aria-label="Вид" id="view-seg">
+    <button type="button" role="radio" data-view="single" aria-checked="true">Одна</button>
+    <button type="button" role="radio" data-view="grid" aria-checked="false">Все 9</button>
+  </div>
+</header>
+
+<nav class="st-picker" id="picker" role="radiogroup" aria-label="Лотерея"></nav>
+
+<main class="st-main">
+  <section class="st-stage-frame" id="single-frame" aria-label="Анимация">
+    <div class="st-stage" id="single-stage"></div>
+  </section>
+  <section class="st-grid" id="grid" hidden aria-label="Все девять лотерей"></section>
+</main>
+
+<section class="st-controls" aria-label="Управление">
+  <div class="st-actions">
+    <button type="button" class="st-btn st-btn-ghost" id="replay" title="Та же комбинация, новые траектории (R)">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7M4 4v4.5h4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Повторить
+    </button>
+    <button type="button" class="st-btn st-btn-primary" id="random" title="Новая случайная комбинация (пробел)">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z M19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z" fill="currentColor"/></svg>
+      Случайная комбинация
+    </button>
+  </div>
+  <div class="st-options">
+    <div class="st-field">
+      <span class="st-label" id="speed-l">Скорость</span>
+      <div class="st-seg" role="radiogroup" aria-labelledby="speed-l" id="speed-seg">
+        <button type="button" role="radio" data-speed="0.5" aria-checked="false">0.5×</button>
+        <button type="button" role="radio" data-speed="1" aria-checked="true">1×</button>
+        <button type="button" role="radio" data-speed="1.5" aria-checked="false">1.5×</button>
+        <button type="button" role="radio" data-speed="2" aria-checked="false">2×</button>
+      </div>
+    </div>
+    <div class="st-field">
+      <span class="st-label" id="layout-l">Композиция</span>
+      <div class="st-seg" role="radiogroup" aria-labelledby="layout-l" id="layout-seg">
+        <button type="button" role="radio" data-layout="ring" aria-checked="true">Кольцо</button>
+        <button type="button" role="radio" data-layout="line" aria-checked="false">Линия</button>
+      </div>
+    </div>
+    <div class="st-toggles">
+      <label class="st-check"><input type="checkbox" id="opt-hold"><span>Зафиксировать</span></label>
+      <label class="st-check"><input type="checkbox" id="opt-auto"><span>Автоповтор</span></label>
+      <label class="st-check"><input type="checkbox" id="opt-reduced"><span>Меньше движения</span></label>
+    </div>
+  </div>
+</section>
+
+<section class="st-info" aria-live="polite">
+  <div class="st-info-row"><strong id="info-name">—</strong><span id="info-rule"></span></div>
+  <div class="st-info-row st-combo" id="info-combo"></div>
+  <p class="st-disclaimer">Каждый запуск — новая независимая случайная комбинация (crypto.getRandomValues), в порядке выпадения, без сортировки. Только демонстрация: не официальный результат тиража и не прогноз. <span id="info-source"></span></p>
+</section>
+
+<script type="module" src="./stand.js"></script>
+</body>
+</html>

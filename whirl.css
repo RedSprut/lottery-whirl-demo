@@ -1,0 +1,158 @@
+/* Lottery Whirl — engine styles (EXPERIMENTAL prototype; not loaded by the app).
+   Per-game colours arrive as the app's own tokens (--hdr-a/-b/-c, --game-glow, --gm*, --gb*)
+   set on .wh-stage by the engine; the ball material is the app's --ball-surface recipe
+   (index.html «МАТЕРИАЛ ШАРА»), sized from --d instead of em. */
+
+@property --wh-a { syntax: '<color>'; inherits: true; initial-value: #20202a; }
+@property --wh-b { syntax: '<color>'; inherits: true; initial-value: #20202a; }
+@property --wh-c { syntax: '<color>'; inherits: true; initial-value: #20202a; }
+
+.wh-stage {
+  --wh-font: 'Unbounded', 'Manrope', ui-rounded, 'SF Pro Rounded', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  position: relative; overflow: hidden; isolation: isolate;
+  width: 100%; height: 100%;
+  container-type: size;
+  border-radius: inherit;
+  background: #06050a;
+  contain: strict;
+  -webkit-user-select: none; user-select: none;
+}
+
+/* themed night backdrop — the registered colours cross-fade when the lottery changes */
+.wh-bg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(58% 52% at 50% 44%, color-mix(in srgb, var(--wh-a) 30%, transparent), transparent 72%),
+    radial-gradient(80% 60% at 50% 118%, color-mix(in srgb, var(--wh-c) 26%, transparent), transparent 70%),
+    radial-gradient(70% 50% at 50% -12%, color-mix(in srgb, var(--wh-b) 18%, transparent), transparent 70%),
+    radial-gradient(130% 100% at 50% 42%, #13111b 0%, #08070d 64%, #040308 100%);
+  transition: --wh-a .7s ease, --wh-b .7s ease, --wh-c .7s ease;
+}
+.wh-bg::after { /* soft vignette keeps the eye on the composition */
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(120% 95% at 50% 45%, transparent 55%, rgba(0, 0, 0, .55) 100%);
+}
+
+.wh-halo, .wh-flare {
+  position: absolute; left: var(--cx, 50%); top: var(--cy, 50%);
+  border-radius: 50%; pointer-events: none; opacity: 0;
+  transform: translate(-50%, -50%);
+}
+.wh-halo {
+  width: min(calc(var(--comp, 300px) * 1.75), 150cqmin); height: min(calc(var(--comp, 300px) * 1.75), 150cqmin);
+  background: radial-gradient(closest-side, var(--game-glow, rgba(255,255,255,.3)) 0%, color-mix(in srgb, var(--hdr-b, #888) 16%, transparent) 46%, transparent 100%);
+}
+.wh-flare {
+  width: calc(var(--d, 60px) * 3.8); height: calc(var(--d, 60px) * 3.8);
+  background: radial-gradient(closest-side,
+    rgba(255, 255, 255, .92) 0%,
+    color-mix(in srgb, var(--gm-hi, #fff) 80%, #fff) 12%,
+    color-mix(in srgb, var(--hdr-a, #888) 78%, transparent) 30%,
+    color-mix(in srgb, var(--hdr-b, #888) 42%, transparent) 54%,
+    color-mix(in srgb, var(--hdr-c, #888) 14%, transparent) 76%,
+    transparent 100%);
+}
+
+/* galaxy swirl: drawn once per theme, rotated on the compositor */
+.wh-swirl-wrap { position: absolute; left: var(--cx, 50%); top: var(--cy, 50%); width: 0; height: 0; pointer-events: none; }
+.wh-swirl {
+  position: absolute; left: 0; top: 0;
+  width: min(calc(var(--comp, 300px) * 1.6), 125cqmin); height: min(calc(var(--comp, 300px) * 1.6), 125cqmin);
+  opacity: 0; transform: translate(-50%, -50%);
+}
+
+.wh-fx { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+
+/* ── balls ── */
+.wh-balls { position: absolute; inset: 0; pointer-events: none; }
+.wh-ball {
+  position: absolute; left: 0; top: 0; width: var(--d); height: var(--d);
+  opacity: 0; transform-origin: 50% 50%;
+}
+.wh-balls.is-moving .wh-ball { will-change: transform, opacity; }
+.wh-main { --ball: var(--gm); --ball-hi: var(--gm-hi); --ball-lo: var(--gm-lo); --ball-txt: var(--gm-txt); z-index: 1; }
+.wh-bonus { --ball: var(--gb); --ball-hi: var(--gb-hi); --ball-lo: var(--gb-lo); --ball-txt: var(--gb-txt); z-index: 2; }
+.wh-addon { --ball: var(--ss); --ball-hi: var(--ss-hi); --ball-lo: var(--ss-lo); --ball-txt: var(--ss-txt); z-index: 2; }
+
+.wh-body {
+  position: absolute; inset: 0; border-radius: 50%;
+  display: grid; place-items: center;
+  background-color: var(--ball, #ccc);
+  background-image:
+    radial-gradient(circle at 30% 22%, rgba(255,255,255,.98) 0, rgba(255,255,255,.55) 8%, rgba(255,255,255,0) 26%),
+    radial-gradient(circle at 68% 82%, rgba(255,255,255,.16) 0, rgba(255,255,255,0) 30%),
+    radial-gradient(ellipse 62% 30% at 50% 97%, color-mix(in srgb, var(--hdr-a, #fff) 34%, transparent), transparent 72%),
+    radial-gradient(circle at 50% 42%, var(--ball-hi, #fff) 0, var(--ball, #ccc) 56%, var(--ball-lo, #888) 106%);
+  box-shadow:
+    inset 0 calc(var(--d) * -.14) calc(var(--d) * .2) rgba(0, 0, 0, .32),
+    inset 0 calc(var(--d) * .045) calc(var(--d) * .075) rgba(255, 255, 255, .55),
+    0 calc(var(--d) * .12) calc(var(--d) * .3) rgba(0, 0, 0, .5),
+    0 0 calc(var(--d) * .5) color-mix(in srgb, var(--ball) 34%, transparent);
+}
+.wh-num {
+  display: block;
+  font: 800 calc(var(--d) * .4) / 1 var(--wh-font);
+  letter-spacing: -.02em; font-variant-numeric: tabular-nums lining-nums;
+  color: var(--ball-txt, #fff);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, .42), 0 0 1px rgba(0, 0, 0, .3);
+  transform-origin: 50% 52%;
+}
+.txt-dark-main .wh-main .wh-num,
+.txt-dark-bonus .wh-bonus .wh-num,
+.wh-addon .wh-num { text-shadow: 0 1px 0 rgba(255, 255, 255, .35); }
+
+/* extras read as extras: a fine luminous ring around the ball (outside it, so the ball and its
+   number stay exactly like the app's) — the layout keeps a gap for it */
+.wh-bonus .wh-body::after, .wh-addon .wh-body::after {
+  content: ''; position: absolute; inset: calc(var(--d) * -.075); border-radius: 50%;
+  border: calc(var(--d) * .032) solid color-mix(in srgb, var(--ball-hi) 72%, #fff);
+  box-shadow: 0 0 calc(var(--d) * .22) color-mix(in srgb, var(--ball-hi) 60%, transparent);
+  opacity: .78;
+}
+.wh-addon .wh-body::before { /* SuperStar ★, as the app's history marks it */
+  content: '★'; position: absolute; top: 7%; left: 0; right: 0; text-align: center;
+  font: 700 calc(var(--d) * .15) / 1 system-ui, sans-serif; color: var(--ball-txt); opacity: .75;
+}
+
+.wh-plus {
+  position: absolute; left: 0; top: 0;
+  font: 300 calc(var(--d) * .5) / 1 var(--wh-font); color: rgba(255, 255, 255, .55);
+  opacity: 0; transition: opacity .5s ease;
+}
+.wh-stage[data-phase="hold"] .wh-plus { opacity: 1; }
+
+/* hold: a breath of float, nothing that blurs the numbers */
+@keyframes whFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-2.2%); } }
+.wh-stage[data-phase="hold"] .wh-body,
+.wh-stage[data-phase="exit"] .wh-body { animation: whFloat 3.4s ease-in-out infinite; }
+.wh-stage.is-reduced .wh-body { animation: none !important; }
+
+/* ── caption (fades in with the composition) ── */
+.wh-caption {
+  position: absolute; left: 0; right: 0; bottom: 0; height: var(--cap-h, 0px);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .35em;
+  padding: 0 12px 6px; box-sizing: border-box;
+  font: 600 clamp(9px, 2.6cqmin, 13px) / 1.25 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color: rgba(255, 255, 255, .78); text-align: center;
+  opacity: 0; transform: translateY(6px); transition: opacity .55s ease, transform .55s ease;
+  pointer-events: none;
+}
+.wh-stage[data-phase="hold"] .wh-caption { opacity: 1; transform: none; }
+.wh-cap-title {
+  font: 800 clamp(10px, 3.2cqmin, 15px) / 1.1 var(--wh-font);
+  letter-spacing: .16em; text-transform: uppercase; color: #fff;
+  text-shadow: 0 0 18px color-mix(in srgb, var(--hdr-a) 70%, transparent);
+}
+.wh-cap-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: .3em 1em; }
+.wh-cap-chip { display: inline-flex; align-items: center; gap: .45em; white-space: nowrap; }
+.wh-cap-chip i { width: .9em; height: .9em; border-radius: 50%; display: inline-block; }
+.wh-cap-main i { background: radial-gradient(circle at 35% 30%, var(--gm-hi), var(--gm) 60%, var(--gm-lo)); }
+.wh-cap-bonus i { background: radial-gradient(circle at 35% 30%, var(--gb-hi), var(--gb) 60%, var(--gb-lo)); box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--gb-hi) 70%, #fff); }
+.wh-cap-addon i { background: radial-gradient(circle at 35% 30%, var(--ss-hi), var(--ss) 60%, var(--ss-lo)); box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--ss-hi) 70%, #fff); }
+.wh-cap-note { font-size: .82em; font-weight: 500; color: rgba(255, 255, 255, .5); letter-spacing: .01em; }
+@container (max-height: 260px) { .wh-cap-note { display: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .wh-bg { transition: none; }
+  .wh-body { animation: none !important; }
+}
